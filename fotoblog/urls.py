@@ -38,4 +38,5 @@ urlpatterns = [
         template_name="authentication/password_change_done.html"),
         name="password_change_done"
         ),
+    path("signup/", authentication.views.signup_page, name="signup")
 ]
