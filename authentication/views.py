@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.views.generic import View
@@ -67,3 +68,15 @@ def signup_page(request):
             login(request, user)
             return redirect(settings.LOGIN_REDIRECT_URL)
     return render(request, "authentication/signup.html", context={"form": form})
+
+@login_required
+def upload_profile_photo(request):
+    form = forms.UploadProfilePhotoForm()
+    if request.method == "POST":
+        form = forms.UploadProfilePhotoForm(request.POST, request.FILES, instance=request.user)
+        photo = form.save(commit=False)
+        photo.uploader = request.user
+        photo.save()
+        return redirect("home")
+    return render(request, "authentication/upload_profile_photo.html", context={"form": form})
+
